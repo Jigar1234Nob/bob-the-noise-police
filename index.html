@@ -11,7 +11,7 @@
         padding-top: 40px;
     }
     #bob {
-        font-size: 220px; /* BIGGER BOB! */
+        font-size: 220px;
         transition: all 0.3s ease;
     }
     #status {
@@ -47,27 +47,49 @@ async function startNoiseDetection() {
             return sum / dataArray.length;
         }
 
+        let currentState = "happy";
+        let pendingState = "happy";
+        let stateChangeTime = Date.now();
+
         function updateBob() {
             const volume = getVolume();
 
-            const bob = document.getElementById('bob');
-            const status = document.getElementById('status');
+            let newState;
 
-            if (volume < 30) {
-                bob.textContent = "🙂";
-                status.textContent = "Bob is happy!";
-            } 
-            else if (volume < 60) {
-                bob.textContent = "😐";
-                status.textContent = "Bob is neutral. It's a bit noisy.";
-            } 
-            else if (volume < 85) {
-                bob.textContent = "😢";
-                status.textContent = "Bob is upset by the noise.";
-            } 
-            else {
-                bob.textContent = "😭";
-                status.textContent = "Way too loud! Bob is crying!";
+            if (volume < 30) newState = "happy";
+            else if (volume < 60) newState = "neutral";
+            else if (volume < 85) newState = "upset";
+            else newState = "crying";
+
+            // If state changes, start a 2-second timer
+            if (newState !== pendingState) {
+                pendingState = newState;
+                stateChangeTime = Date.now();
+            }
+
+            // Only change after 2 seconds of stability
+            if (pendingState !== currentState && Date.now() - stateChangeTime >= 2000) {
+                currentState = pendingState;
+
+                const bob = document.getElementById('bob');
+                const status = document.getElementById('status');
+
+                if (currentState === "happy") {
+                    bob.textContent = "🙂";
+                    status.textContent = "Bob is happy!";
+                } 
+                else if (currentState === "neutral") {
+                    bob.textContent = "😐";
+                    status.textContent = "Bob is neutral.";
+                } 
+                else if (currentState === "upset") {
+                    bob.textContent = "😢";
+                    status.textContent = "Bob is upset by the noise.";
+                } 
+                else if (currentState === "crying") {
+                    bob.textContent = "😭";
+                    status.textContent = "Way too loud! Bob is crying!";
+                }
             }
 
             requestAnimationFrame(updateBob);
