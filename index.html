@@ -61,14 +61,14 @@ async function startNoiseDetection() {
             else if (volume < 85) newState = "upset";
             else newState = "crying";
 
-            // If state changes, start a 2-second timer
+            // If the detected state changes, restart the timer
             if (newState !== pendingState) {
                 pendingState = newState;
                 stateChangeTime = Date.now();
             }
 
-            // Only change after 2 seconds of stability
-            if (pendingState !== currentState && Date.now() - stateChangeTime >= 2000) {
+            // Apply the new state only after 1 second of stable noise level
+            if (pendingState !== currentState && Date.now() - stateChangeTime >= 1000) {
                 currentState = pendingState;
 
                 const bob = document.getElementById('bob');
