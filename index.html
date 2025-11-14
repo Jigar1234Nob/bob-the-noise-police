@@ -36,16 +36,14 @@ async function startNoiseDetection() {
         const mic = audioContext.createMediaStreamSource(stream);
         const analyser = audioContext.createAnalyser();
 
-        analyser.fftSize = 256;
+        analyser.fftSize = 512;
         const dataArray = new Uint8Array(analyser.frequencyBinCount);
         mic.connect(analyser);
 
         function getVolume() {
             analyser.getByteFrequencyData(dataArray);
             let sum = 0;
-            for (let i = 0; i < dataArray.length; i++) {
-                sum += dataArray[i];
-            }
+            for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
             return sum / dataArray.length;
         }
 
@@ -55,18 +53,25 @@ async function startNoiseDetection() {
             const bob = document.getElementById('bob');
             const status = document.getElementById('status');
 
-            if (volume < 5) {
-                bob.textContent = "😴";
-                status.textContent = "Bob is sleeping...";
-            } else if (volume < 20) {
+            // Quiet — happy
+            if (volume < 30) {
                 bob.textContent = "🙂";
                 status.textContent = "Bob is happy!";
-            } else if (volume < 40) {
+            } 
+            // Medium noise — straight face
+            else if (volume < 60) {
+                bob.textContent = "😐";
+                status.textContent = "Bob is neutral. It's a bit noisy.";
+            } 
+            // Loud — upset
+            else if (volume < 85) {
                 bob.textContent = "😢";
                 status.textContent = "Bob is upset by the noise.";
-            } else {
+            } 
+            // Very loud — crying
+            else {
                 bob.textContent = "😭";
-                status.textContent = "Too loud! Bob woke up and is crying!";
+                status.textContent = "Way too loud! Bob is crying!";
             }
 
             requestAnimationFrame(updateBob);
