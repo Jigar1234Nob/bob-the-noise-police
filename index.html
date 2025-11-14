@@ -2,31 +2,52 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Bob's Noise Meter</title>
+<title>Bob The Noise Police Officer</title>
 <style>
     body {
         background: #f0f4ff;
         font-family: Arial, sans-serif;
         text-align: center;
-        padding-top: 50px;
+        padding-top: 40px;
     }
     #bob {
-        font-size: 120px;
+        font-size: 220px; /* BIGGER BOB! */
         transition: all 0.3s ease;
     }
     #status {
         margin-top: 20px;
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
+    }
+
+    /* About Section Styling */
+    #about {
+        margin-top: 50px;
+        padding: 20px;
+        background: #ffffffaa;
+        border-radius: 12px;
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 20px;
+        line-height: 1.6;
     }
 </style>
 </head>
 <body>
 
-<h1>Bob's Noise Level Website</h1>
+<h1>Bob The Noise Police Officer</h1>
 
 <div id="bob">🙂</div>
 <div id="status">Bob is happy!</div>
+
+<div id="about">
+    <h2>About Bob</h2>
+    <p>Meet Bob, who is 67 years old, a retired police officer who is happily married (soz 🙂).</p>
+    <p>Bob now volunteers as a Noise Police Monitor.</p>
+    <p><strong>Height:</strong> 1.67m</p>
+    <p><strong>Weight:</strong> 67 kg</p>
+</div>
 
 <script>
 async function startNoiseDetection() {
@@ -53,22 +74,18 @@ async function startNoiseDetection() {
             const bob = document.getElementById('bob');
             const status = document.getElementById('status');
 
-            // Quiet — happy
             if (volume < 30) {
                 bob.textContent = "🙂";
                 status.textContent = "Bob is happy!";
             } 
-            // Medium noise — straight face
             else if (volume < 60) {
                 bob.textContent = "😐";
                 status.textContent = "Bob is neutral. It's a bit noisy.";
             } 
-            // Loud — upset
             else if (volume < 85) {
                 bob.textContent = "😢";
                 status.textContent = "Bob is upset by the noise.";
             } 
-            // Very loud — crying
             else {
                 bob.textContent = "😭";
                 status.textContent = "Way too loud! Bob is crying!";
