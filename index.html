@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bob's Noise Meter</title>
+<style>
+    body {
+        background: #f0f4ff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding-top: 50px;
+    }
+    #bob {
+        font-size: 120px;
+        transition: all 0.3s ease;
+    }
+    #status {
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<h1>Bob's Noise Level Website</h1>
+
+<div id="bob">🙂</div>
+<div id="status">Bob is happy!</div>
+
+<script>
+async function startNoiseDetection() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const audioContext = new AudioContext();
+        const mic = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+
+        analyser.fftSize = 256;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        mic.connect(analyser);
+
+        function getVolume() {
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+            }
+            return sum / dataArray.length;
+        }
+
+        function updateBob() {
+            const volume = getVolume();
+
+            const bob = document.getElementById('bob');
+            const status = document.getElementById('status');
+
+            if (volume < 5) {
+                bob.textContent = "😴";
+                status.textContent = "Bob is sleeping...";
+            } else if (volume < 20) {
+                bob.textContent = "🙂";
+                status.textContent = "Bob is happy!";
+            } else if (volume < 40) {
+                bob.textContent = "😢";
+                status.textContent = "Bob is upset by the noise.";
+            } else {
+                bob.textContent = "😭";
+                status.textContent = "Too loud! Bob woke up and is crying!";
+            }
+
+            requestAnimationFrame(updateBob);
+        }
+
+        updateBob();
+
+    } catch (err) {
+        alert("Microphone access is required to run this site.");
+        console.error(err);
+    }
+}
+
+startNoiseDetection();
+</script>
+
+</body>
+</html>
