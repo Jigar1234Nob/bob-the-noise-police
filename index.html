@@ -8,15 +8,15 @@
         background: #f0f4ff;
         font-family: Arial, sans-serif;
         text-align: center;
-        padding-top: 50px;
+        padding-top: 40px;
     }
     #bob {
-        font-size: 120px;
+        font-size: 220px; /* BIGGER BOB! */
         transition: all 0.3s ease;
     }
     #status {
         margin-top: 20px;
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
     }
 </style>
@@ -53,22 +53,18 @@ async function startNoiseDetection() {
             const bob = document.getElementById('bob');
             const status = document.getElementById('status');
 
-            // Quiet — happy
             if (volume < 30) {
                 bob.textContent = "🙂";
                 status.textContent = "Bob is happy!";
             } 
-            // Medium noise — straight face
             else if (volume < 60) {
                 bob.textContent = "😐";
                 status.textContent = "Bob is neutral. It's a bit noisy.";
             } 
-            // Loud — upset
             else if (volume < 85) {
                 bob.textContent = "😢";
                 status.textContent = "Bob is upset by the noise.";
             } 
-            // Very loud — crying
             else {
                 bob.textContent = "😭";
                 status.textContent = "Way too loud! Bob is crying!";
