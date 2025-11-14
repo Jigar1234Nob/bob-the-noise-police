@@ -11,7 +11,7 @@
         padding-top: 40px;
     }
     #bob {
-        font-size: 220px; /* BIGGER BOB! */
+        font-size: 220px;
         transition: all 0.3s ease;
     }
     #status {
@@ -19,8 +19,6 @@
         font-size: 28px;
         font-weight: bold;
     }
-
-    /* About Section Styling */
     #about {
         margin-top: 50px;
         padding: 20px;
@@ -70,7 +68,6 @@ async function startNoiseDetection() {
 
         function updateBob() {
             const volume = getVolume();
-
             const bob = document.getElementById('bob');
             const status = document.getElementById('status');
 
