@@ -93,7 +93,15 @@
         margin: 0;
     }
 
-    #themeToggle {
+    .btnGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+        position: relative;
+    }
+
+    .iconBtn {
         border: 1px solid var(--panel-border);
         background: var(--panel);
         color: var(--text);
@@ -101,10 +109,48 @@
         padding: 8px 16px;
         font-size: 14px;
         cursor: pointer;
+        white-space: nowrap;
         transition: transform 0.15s ease, background 0.4s ease, color 0.4s ease;
     }
-    #themeToggle:hover { transform: scale(1.05); }
-    #themeToggle:active { transform: scale(0.96); }
+    .iconBtn:hover { transform: scale(1.05); }
+    .iconBtn:active { transform: scale(0.96); }
+
+    #musicToggle.open {
+        background: var(--accent-blue);
+        color: #fff;
+        border-color: var(--accent-blue);
+    }
+
+    /* Settings popover: dark mode + sensitivity live here */
+    .settingsPanel {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        width: 220px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+        backdrop-filter: blur(8px);
+        z-index: 60;
+        text-align: left;
+    }
+    .settingsPanel.open { display: block; }
+    .settingsRow { margin-bottom: 14px; }
+    .settingsRow:last-child { margin-bottom: 0; }
+    .settingsRow > label {
+        font-size: 13px;
+        color: var(--text-soft);
+        display: block;
+        margin-bottom: 6px;
+    }
+    .settingsRow .iconBtn { width: 100%; }
+    #sensitivitySlider {
+        width: 100%;
+        accent-color: var(--accent-blue);
+    }
 
     #bob {
         font-size: 200px;
@@ -144,6 +190,28 @@
         margin-top: 6px;
     }
 
+    #alarmBanner {
+        display: none;
+        max-width: 360px;
+        margin: 14px auto 0;
+        padding: 8px 14px;
+        border-radius: 10px;
+        background: var(--accent-red);
+        color: #fff;
+        font-weight: bold;
+        font-size: 15px;
+        animation: alarmPulse 0.8s ease-in-out infinite;
+    }
+    #alarmBanner.visible { display: block; }
+
+    @keyframes alarmPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.55; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        #alarmBanner { animation: none; }
+    }
+
     .panel {
         margin-top: 36px;
         padding: 22px 26px;
@@ -165,6 +233,104 @@
         text-align: center;
     }
     .panel p { margin: 8px 0; }
+
+    #ytStatus {
+        font-size: 13px;
+        color: var(--text-soft);
+        margin-top: 6px;
+        min-height: 16px;
+        text-align: center;
+    }
+    #ytPlayerContainer {
+        margin: 14px auto 0;
+        border-radius: 10px;
+        overflow: hidden;
+        max-width: 160px;
+    }
+    #nowPlaying {
+        margin-top: 12px;
+        font-weight: bold;
+        font-size: 15px;
+        min-height: 20px;
+        text-align: center;
+    }
+    .ytControls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin-top: 14px;
+    }
+    .ytControls button {
+        border: 1px solid var(--panel-border);
+        background: var(--panel);
+        color: var(--text);
+        border-radius: 999px;
+        width: 42px;
+        height: 42px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.15s ease;
+    }
+    .ytControls button:hover:not(:disabled) { transform: scale(1.08); }
+    .ytControls button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Floating, draggable, pinnable relaxing-music widget */
+    .floatingWidget {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 230px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 14px;
+        box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+        backdrop-filter: blur(8px);
+        z-index: 200;
+        overflow: hidden;
+    }
+    .floatingWidget.visible { display: flex; }
+
+    .widgetHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        background: var(--accent-blue);
+        color: #fff;
+        font-size: 13px;
+        font-weight: bold;
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+    }
+    .widgetHeader.dragging { cursor: grabbing; }
+    .floatingWidget.pinned .widgetHeader { cursor: default; }
+
+    .widgetHeaderBtns { display: flex; gap: 6px; }
+    .widgetHeaderBtns button {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: #fff;
+        border-radius: 6px;
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
+        line-height: 1;
+        cursor: pointer;
+    }
+    .widgetHeaderBtns button:hover { background: rgba(255,255,255,0.35); }
+
+    .widgetBody {
+        padding: 12px;
+        text-align: center;
+    }
+
+    @media (max-width: 480px) {
+        .floatingWidget { width: 195px; right: 12px; bottom: 12px; }
+    }
 
     .version-badge {
         display: inline-block;
@@ -212,7 +378,21 @@
 
 <div class="topbar">
     <h1>Bob The Noise Police Officer</h1>
-    <button id="themeToggle" aria-label="Toggle dark mode">🌙 Dark mode</button>
+    <div class="btnGroup">
+        <button id="settingsToggle" class="iconBtn" aria-label="Open settings">⚙️ Settings</button>
+        <button id="musicToggle" class="iconBtn" aria-label="Toggle relaxing music player">🎵 Relaxing music</button>
+
+        <div class="settingsPanel" id="settingsPanel">
+            <div class="settingsRow">
+                <label>Appearance</label>
+                <button id="themeToggle" class="iconBtn" aria-label="Toggle dark mode">🌙 Dark mode</button>
+            </div>
+            <div class="settingsRow">
+                <label for="sensitivitySlider">Sensitivity: <span id="sensitivityValue">1.0x</span></label>
+                <input type="range" id="sensitivitySlider" min="0.5" max="2.5" step="0.1" value="1">
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="bob">🙂</div>
@@ -223,6 +403,8 @@
     <div id="meterLabel">Listening for noise…</div>
 </div>
 
+<div id="alarmBanner">🚨 ALARM! That's too loud!</div>
+
 <div class="panel" id="about">
     <h2>About Bob</h2>
     <p>Meet Bob, who is 67 years old, a retired police officer who is happily married (soz 🙂).</p>
@@ -232,22 +414,38 @@
 </div>
 
 <div class="panel" id="info">
-    <h2>ℹ️ Info <span class="version-badge">v2.00</span></h2>
+    <h2>ℹ️ Info <span class="version-badge">v2.30</span></h2>
     <p>Bob watches your microphone and reacts to how loud — and how shrill — things get. The background changes with him.</p>
     <div class="changelog-item">
-        <span class="changelog-tag">NEW</span>
+        <span class="changelog-tag">v2.30</span>
+        <span>Settings moved into one ⚙️ menu — dark mode and the sensitivity slider live there now.</span>
+    </div>
+    <div class="changelog-item">
+        <span class="changelog-tag">v2.30</span>
+        <span>Relaxing music now opens a movable, pinnable mini-player with play/pause, back, skip, and a now-playing display. The playlist is set directly in the code.</span>
+    </div>
+    <div class="changelog-item">
+        <span class="changelog-tag">v2.10</span>
+        <span>Alarm sound when it gets dangerously loud, on top of the flashing light bar.</span>
+    </div>
+    <div class="changelog-item">
+        <span class="changelog-tag">v2.10</span>
+        <span>Relaxing music button added (originally a generated ambient soundscape, now the YouTube mini-player above).</span>
+    </div>
+    <div class="changelog-item">
+        <span class="changelog-tag">v2.00</span>
         <span>Dark / light mode toggle.</span>
     </div>
     <div class="changelog-item">
-        <span class="changelog-tag">NEW</span>
+        <span class="changelog-tag">v2.00</span>
         <span>Floating bubbles drift by when it's calm; they turn into bouncing balls as it gets louder.</span>
     </div>
     <div class="changelog-item">
-        <span class="changelog-tag">NEW</span>
+        <span class="changelog-tag">v2.00</span>
         <span>Screaming or high-pitched noise triggers siren-coloured sound waves and a flashing police light bar.</span>
     </div>
     <div class="changelog-item">
-        <span class="changelog-tag">NEW</span>
+        <span class="changelog-tag">v2.00</span>
         <span>Live volume meter under Bob.</span>
     </div>
     <div class="changelog-item">
@@ -258,15 +456,221 @@
 
 <footer>Bob needs microphone access to do his job. Nothing you say is recorded or sent anywhere — it's all processed live in your browser.</footer>
 
+<div class="floatingWidget" id="musicWidget">
+    <div class="widgetHeader" id="musicWidgetHeader">
+        <span>🎵 Relaxing Music</span>
+        <div class="widgetHeaderBtns">
+            <button id="musicPinBtn" aria-label="Pin window in place">📌</button>
+            <button id="musicCloseBtn" aria-label="Close">✕</button>
+        </div>
+    </div>
+    <div class="widgetBody">
+        <div id="ytStatus"></div>
+        <div id="ytPlayerContainer"></div>
+        <div id="nowPlaying"></div>
+        <div class="ytControls">
+            <button id="ytPrevBtn" disabled aria-label="Previous track">⏮</button>
+            <button id="ytPlayPauseBtn" disabled aria-label="Play or pause">▶</button>
+            <button id="ytNextBtn" disabled aria-label="Next track">⏭</button>
+        </div>
+    </div>
+</div>
+
 <script>
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ---------- Theme toggle ---------- */
+/* ---------- Settings popover: dark mode + sensitivity ---------- */
+const settingsToggle = document.getElementById('settingsToggle');
+const settingsPanel = document.getElementById('settingsPanel');
 const themeToggle = document.getElementById('themeToggle');
+
+settingsToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    settingsPanel.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+    if (!settingsPanel.classList.contains('open')) return;
+    if (settingsPanel.contains(e.target) || e.target === settingsToggle) return;
+    settingsPanel.classList.remove('open');
+});
+
 themeToggle.addEventListener('click', () => {
     const isDark = document.body.classList.toggle('dark');
     themeToggle.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
 });
+
+let sensitivity = 1.0;
+const sensitivitySlider = document.getElementById('sensitivitySlider');
+const sensitivityValue = document.getElementById('sensitivityValue');
+sensitivitySlider.addEventListener('input', () => {
+    sensitivity = parseFloat(sensitivitySlider.value);
+    sensitivityValue.textContent = `${sensitivity.toFixed(1)}x`;
+});
+
+/* ---------- Relaxing music: floating, draggable, pinnable YouTube widget ----------
+   Add your own playlist below — paste a full URL like
+   https://www.youtube.com/playlist?list=PLxxxxxxxx, or just the playlist ID.
+   Leave it blank and the widget will tell you where to add it. */
+const DEFAULT_PLAYLIST = 'https://www.youtube.com/playlist?list=PLQ_PIlf6OzqIEvjMOCAZsD21T6xn9QUP6';
+
+const musicToggle = document.getElementById('musicToggle');
+const musicWidget = document.getElementById('musicWidget');
+const musicWidgetHeader = document.getElementById('musicWidgetHeader');
+const musicPinBtn = document.getElementById('musicPinBtn');
+const musicCloseBtn = document.getElementById('musicCloseBtn');
+const ytStatus = document.getElementById('ytStatus');
+const nowPlayingEl = document.getElementById('nowPlaying');
+const ytPrevBtn = document.getElementById('ytPrevBtn');
+const ytPlayPauseBtn = document.getElementById('ytPlayPauseBtn');
+const ytNextBtn = document.getElementById('ytNextBtn');
+
+let ytPlayer = null;
+let ytApiLoading = false;
+let pendingPlaylistId = null;
+
+function extractPlaylistId(raw) {
+    const input = (raw || '').trim();
+    if (!input) return null;
+    const listMatch = input.match(/[?&]list=([\w-]+)/);
+    if (listMatch) return listMatch[1];
+    if (/^[\w-]{10,}$/.test(input)) return input; // looks like a bare playlist ID already
+    return null;
+}
+
+function loadYouTubeAPI() {
+    if (window.YT && window.YT.Player) {
+        window.onYouTubeIframeAPIReady();
+        return;
+    }
+    if (ytApiLoading) return;
+    ytApiLoading = true;
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+}
+
+window.onYouTubeIframeAPIReady = function () {
+    if (pendingPlaylistId) {
+        createYTPlayer(pendingPlaylistId);
+        pendingPlaylistId = null;
+    }
+};
+
+function createYTPlayer(playlistId) {
+    if (ytPlayer) {
+        ytStatus.textContent = '';
+        ytPlayer.loadPlaylist({ list: playlistId });
+        return;
+    }
+    ytPlayer = new YT.Player('ytPlayerContainer', {
+        height: '90',
+        width: '160',
+        playerVars: { listType: 'playlist', list: playlistId, autoplay: 1, playsinline: 1 },
+        events: {
+            onReady: () => {
+                ytPrevBtn.disabled = false;
+                ytPlayPauseBtn.disabled = false;
+                ytNextBtn.disabled = false;
+                ytStatus.textContent = '';
+                updateNowPlaying();
+            },
+            onStateChange: (e) => {
+                updatePlayPauseIcon(e.data);
+                updateNowPlaying();
+                if (e.data === YT.PlayerState.PLAYING) setTimeout(updateNowPlaying, 600);
+            },
+            onError: () => {
+                ytStatus.textContent = "Couldn't load that Refresh The Page.";
+            }
+        }
+    });
+}
+
+function updateNowPlaying() {
+    if (!ytPlayer || typeof ytPlayer.getVideoData !== 'function') return;
+    try {
+        const data = ytPlayer.getVideoData();
+        nowPlayingEl.textContent = data && data.title ? `Now playing: ${data.title}` : '';
+    } catch (e) {}
+}
+
+function updatePlayPauseIcon(state) {
+    ytPlayPauseBtn.textContent = state === YT.PlayerState.PLAYING ? '⏸' : '▶';
+}
+
+function ensureDefaultPlaylistLoaded() {
+    if (ytPlayer) return; // already loaded earlier - just showing the widget again
+    const id = extractPlaylistId(DEFAULT_PLAYLIST);
+    if (!id) {
+        ytStatus.textContent = '';
+        return;
+    }
+    ytStatus.textContent = 'Loading playlist…';
+    if (window.YT && window.YT.Player) {
+        createYTPlayer(id);
+    } else {
+        pendingPlaylistId = id;
+        loadYouTubeAPI();
+    }
+}
+
+ytPrevBtn.addEventListener('click', () => ytPlayer && ytPlayer.previousVideo());
+ytNextBtn.addEventListener('click', () => ytPlayer && ytPlayer.nextVideo());
+ytPlayPauseBtn.addEventListener('click', () => {
+    if (!ytPlayer) return;
+    if (ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+    else ytPlayer.playVideo();
+});
+
+/* Open/close the widget from the topbar button */
+musicToggle.addEventListener('click', () => {
+    const willShow = !musicWidget.classList.contains('visible');
+    musicWidget.classList.toggle('visible', willShow);
+    musicToggle.classList.toggle('open', willShow);
+    if (willShow) ensureDefaultPlaylistLoaded();
+});
+
+musicCloseBtn.addEventListener('click', () => {
+    musicWidget.classList.remove('visible');
+    musicToggle.classList.remove('open');
+});
+
+musicPinBtn.addEventListener('click', () => {
+    const pinned = musicWidget.classList.toggle('pinned');
+    musicPinBtn.textContent = pinned ? '📍' : '📌';
+    musicPinBtn.setAttribute('aria-label', pinned ? 'Unpin window' : 'Pin window in place');
+});
+
+/* Drag to move, mouse or touch, via Pointer Events. Disabled while pinned. */
+let dragOffset = null;
+musicWidgetHeader.addEventListener('pointerdown', (e) => {
+    if (musicWidget.classList.contains('pinned')) return;
+    if (e.target.closest('button')) return; // don't start a drag from the pin/close buttons
+    const rect = musicWidget.getBoundingClientRect();
+    dragOffset = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    musicWidget.style.left = `${rect.left}px`;
+    musicWidget.style.top = `${rect.top}px`;
+    musicWidget.style.right = 'auto';
+    musicWidget.style.bottom = 'auto';
+    musicWidgetHeader.classList.add('dragging');
+    musicWidgetHeader.setPointerCapture(e.pointerId);
+});
+musicWidgetHeader.addEventListener('pointermove', (e) => {
+    if (!dragOffset) return;
+    const maxLeft = window.innerWidth - musicWidget.offsetWidth;
+    const maxTop = window.innerHeight - musicWidget.offsetHeight;
+    const newLeft = Math.max(0, Math.min(maxLeft, e.clientX - dragOffset.x));
+    const newTop = Math.max(0, Math.min(maxTop, e.clientY - dragOffset.y));
+    musicWidget.style.left = `${newLeft}px`;
+    musicWidget.style.top = `${newTop}px`;
+});
+function endMusicWidgetDrag(e) {
+    dragOffset = null;
+    musicWidgetHeader.classList.remove('dragging');
+    try { musicWidgetHeader.releasePointerCapture(e.pointerId); } catch (err) {}
+}
+musicWidgetHeader.addEventListener('pointerup', endMusicWidgetDrag);
+musicWidgetHeader.addEventListener('pointercancel', endMusicWidgetDrag);
 
 /* ---------- Background canvas setup ---------- */
 const canvas = document.getElementById('bgCanvas');
@@ -415,6 +819,37 @@ async function startNoiseDetection() {
         const sampleRate = audioContext.sampleRate;
         const binHz = sampleRate / analyser.fftSize;
 
+        /* ---------- Loud-noise alarm (two-tone siren, synthesized) ---------- */
+        const alarmCarrier = audioContext.createOscillator();
+        alarmCarrier.type = 'sine';
+        alarmCarrier.frequency.value = 760;
+
+        const alarmLFO = audioContext.createOscillator();
+        alarmLFO.type = 'sine';
+        alarmLFO.frequency.value = 4; // wail speed
+        const alarmLFOGain = audioContext.createGain();
+        alarmLFOGain.gain.value = 180; // wail depth in Hz
+
+        const alarmGain = audioContext.createGain();
+        alarmGain.gain.value = 0;
+
+        alarmLFO.connect(alarmLFOGain);
+        alarmLFOGain.connect(alarmCarrier.frequency);
+        alarmCarrier.connect(alarmGain);
+        alarmGain.connect(audioContext.destination);
+        alarmCarrier.start();
+        alarmLFO.start();
+
+        function setAlarmSound(active) {
+            const now = audioContext.currentTime;
+            alarmGain.gain.cancelScheduledValues(now);
+            if (active) {
+                alarmGain.gain.linearRampToValueAtTime(0.1, now + 0.08);
+            } else {
+                alarmGain.gain.linearRampToValueAtTime(0, now + 0.3);
+            }
+        }
+
         function getVolume() {
             analyser.getByteFrequencyData(freqData);
             let sum = 0;
@@ -436,9 +871,13 @@ async function startNoiseDetection() {
         const status = document.getElementById('status');
         const meterFill = document.getElementById('meterFill');
         const meterLabel = document.getElementById('meterLabel');
+        const alarmBanner = document.getElementById('alarmBanner');
+
+        let isLoudAlarmActive = false; // has hysteresis, so it's tracked across frames
 
         function updateBob() {
-            const volume = getVolume();          // 0-255
+            const rawVolume = getVolume();        // 0-255, straight from the mic
+            const volume = rawVolume * sensitivity; // scaled by the sensitivity slider
             const dominantHz = getDominantFrequency();
             const volumeNorm = Math.min(1, volume / 130);
 
@@ -480,7 +919,17 @@ async function startNoiseDetection() {
                 currentState = newState;
             }
 
-            setSiren(isScream);
+            // Loud alarm uses hysteresis (on above 95, off below 78) so it doesn't
+            // flicker on/off rapidly when volume hovers right at the edge.
+            if (!isLoudAlarmActive && volume > 95) {
+                isLoudAlarmActive = true;
+            } else if (isLoudAlarmActive && volume < 78) {
+                isLoudAlarmActive = false;
+            }
+
+            alarmBanner.classList.toggle('visible', isLoudAlarmActive);
+            setAlarmSound(isLoudAlarmActive || isScream);
+            setSiren(isScream || isLoudAlarmActive);
             renderBackground(volumeNorm, isScream);
 
             requestAnimationFrame(updateBob);
